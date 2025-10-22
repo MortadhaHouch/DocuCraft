@@ -15,57 +15,91 @@ datasource db {
 }
 
 model User {
-  id              String     @id @default(uuid())
+  id              String          @id @default(uuid())
   firstName       String
   lastName        String
-  email           String     @unique
+  email           String          @unique
   isLoggedIn      Boolean
   documents       Document[]
   requests        Request[]
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
-  sharedDocuments Document[] @relation("sharedDocs")
+  documentShares  DocumentShare[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  sharedDocuments Document[]      @relation("sharedDocs")
 
   @@unique([firstName, lastName])
 }
 
 model Document {
-  id          String    @id @default(uuid())
-  title       String
-  description String?
-  content     String
-  downloads   Int
-  views       Int
-  isPinned    Boolean
-  isArchived Boolean
-  isDeleted  Boolean
-  author      User      @relation(fields: [authorId], references: [id])
-  authorId    String
-  requestId   String
-  requests    Request[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  sharedWith  User[]    @relation("sharedDocs")
+  id             String          @id @default(uuid())
+  title          String
+  description    String?
+  content        String
+  downloads      Int
+  views          Int
+  shares         Int
+  isPinned       Boolean
+  isArchived     Boolean
+  isDeleted      Boolean
+  documentShares DocumentShare[]
+  author         User            @relation(fields: [authorId], references: [id])
+  authorId       String
+  requestId      String
+  requests       Request[]
+  autoSave       Boolean
+  saveInterval   Int
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  sharedWith     User[]          @relation("sharedDocs")
 
   @@unique([title, authorId])
 }
 
 model Request {
-  id         String        @id @default(uuid())
-  status     RequestStatus @default(PENDING)
-  isViewed   Boolean
-  userId     String
-  user       User          @relation(fields: [userId], references: [id])
-  docId      String
-  document   Document      @relation(fields: [docId], references: [id])
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
+  id        String        @id @default(uuid())
+  status    RequestStatus @default(PENDING)
+  isViewed  Boolean
+  userId    String
+  user      User          @relation(fields: [userId], references: [id])
+  docId     String
+  document  Document      @relation(fields: [docId], references: [id])
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 
   @@unique([userId, docId])
+}
+
+enum Permission {
+  VIEW
+  COMMENT
+  EDIT
+  MANAGE
+}
+
+model DocumentShare {
+  id         String     @id @default(uuid())
+  document   Document   @relation(fields: [documentId], references: [id])
+  documentId String
+  user       User       @relation(fields: [userId], references: [id])
+  userId     String
+  permission Permission
+  expiresAt  DateTime?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@unique([documentId, userId])
 }
 
 enum RequestStatus {
   PENDING
   ACCEPTED
   REJECTED
+}
+enum SaveEvery {
+ THIRTY_SECONDS
+ MINUTE
+ FIVE_MINUTES
+ TEN_MINUTES
+ THIRTY_MINUTES
+ HOUR
 }

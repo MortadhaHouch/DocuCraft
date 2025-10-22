@@ -11,9 +11,9 @@ export default function Footer() {
         <div className="absolute -top-32 left-1/4 h-72 w-72 rounded-full bg-purple-600/20 blur-3xl"></div>
         <div className="absolute right-1/4 -bottom-24 h-80 w-80 rounded-full bg-purple-600/20 blur-3xl"></div>
       </div>
-      <div className="glass relative mx-auto flex max-w-6xl flex-col items-center gap-8 rounded-2xl px-6 py-10 md:flex-row md:items-start md:justify-between md:gap-12">
+      <div className="glass relative mx-auto flex max-w-6xl flex-col items-center gap-8 rounded-2xl px-6 py-10 md:flex-row md:items-start md:justify-between md:gap-12 z-0">
         <div className="flex flex-col items-center md:items-start">
-          <a href="#" className="mb-4 flex items-center gap-2">
+          <Link href="/" className="mb-4 flex items-center gap-2">
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-purple-400 to-purple-700 text-2xl font-extrabold text-white shadow-md">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +33,7 @@ export default function Footer() {
             <span className="bg-gradient-to-br from-purple-200 to-purple-500 bg-clip-text text-xl font-semibold tracking-tight text-transparent">
               {userData.name}
             </span>
-          </a>
+          </Link>
           <p className="text-foreground mb-6 max-w-xs text-center text-sm md:text-left">
             {userData.name} is a software engineer based in Tunisia. He has a passion for building innovative and user-friendly applications.
           </p>

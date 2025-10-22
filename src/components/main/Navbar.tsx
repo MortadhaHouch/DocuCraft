@@ -46,7 +46,7 @@ export function Navbar() {
           <div className="flex items-center gap-4">
             <NavbarButton href="/login" variant="secondary" className="py-1 px-2">Login</NavbarButton>
             <NavbarButton variant="primary" className="py-1 px-2">
-              <ModeToggle/>
+              <ModeToggle className="bg-white dark:bg-dark"/>
             </NavbarButton>
           </div>
         </NavBody>
@@ -91,7 +91,7 @@ export function Navbar() {
                 variant="primary"
                 className="w-full flex justify-center items-center gap-2 py-1 px-2"
               >
-                <ModeToggle/>
+                <ModeToggle className="bg-white dark:bg-dark"/>
               </NavbarButton>
             </div>
           </MobileNavMenu>
