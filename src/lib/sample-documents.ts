@@ -62,7 +62,11 @@ export function generateSampleDocuments(count: number = 50): Document[] {
       views: Math.floor(Math.random() * 5000),
       isArchived: Math.random() > 0.8, // 20% chance of being archived
       isDeleted: Math.random() > 0.8, // 20% chance of being deleted
-      requestId: uuid()
+      requestId: uuid(),
+      shares: Math.floor(Math.random() * 100),
+      autoSave: Math.random() > 0.8, // 20% chance of being auto-saved
+      saveInterval: Math.floor(Math.random() * 60),
+      deletedAt: Math.random() > 0.8 ? new Date(now) : null,
     });
   }
   

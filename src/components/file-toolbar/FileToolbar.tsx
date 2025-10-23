@@ -44,7 +44,7 @@ export default function FileToolbar({
             </Button>
             <Popover>
               <PopoverTrigger>
-                <Button variant="outline" asChild>
+                <Button variant="outline">
                   <Share className="w-5 h-5"/>
                 </Button>
               </PopoverTrigger>

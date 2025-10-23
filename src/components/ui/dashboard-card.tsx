@@ -1,8 +1,8 @@
 'use client';
 
-import { ForwardRefExoticComponent, memo, ReactNode, RefAttributes } from 'react';
+import { memo, ReactNode } from 'react';
 import { motion } from 'framer-motion';
-import { LucideProps, TrendingUp } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 import { NumberTicker } from './number-ticker';
 import { cn } from '@/lib/utils';
 
@@ -28,7 +28,7 @@ export const DashboardCard = memo(({ stat, index }: DashboardCardProps) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
       whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
-      className="group relative cursor-pointer"
+      className={cn("group relative cursor-pointer",stat.bgColor)}
     >
       <div className="border-border bg-card/40 rounded-xl border p-6 transition-all duration-300 hover:shadow-lg">
         <div className="to-primary/5 absolute inset-0 rounded-xl bg-gradient-to-br from-transparent via-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
@@ -57,7 +57,7 @@ export const DashboardCard = memo(({ stat, index }: DashboardCardProps) => {
 
           <div className="mb-3">
             <NumberTicker className="text-foreground mb-1 text-3xl font-bold" value={stat.value}/>
-            <p className="text-muted-foreground text-sm font-medium">
+            <p className={cn("text-muted-foreground text-sm font-medium",stat.color)}>
               {stat.title}
             </p>
           </div>

@@ -26,6 +26,7 @@ model User {
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
   sharedDocuments Document[]      @relation("sharedDocs")
+  notifications   Notification[]
 
   @@unique([firstName, lastName])
 }
@@ -41,6 +42,7 @@ model Document {
   isPinned       Boolean
   isArchived     Boolean
   isDeleted      Boolean
+  deletedAt      DateTime?
   documentShares DocumentShare[]
   author         User            @relation(fields: [authorId], references: [id])
   authorId       String
@@ -51,6 +53,7 @@ model Document {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   sharedWith     User[]          @relation("sharedDocs")
+  notifications  Notification[]
 
   @@unique([title, authorId])
 }
@@ -90,16 +93,39 @@ model DocumentShare {
   @@unique([documentId, userId])
 }
 
+model Notification {
+  id        String           @id @default(uuid())
+  type      NotificationType
+  isViewed  Boolean
+  isDeleted Boolean
+  deletedAt DateTime?
+  content   String
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  docId     String
+  document  Document         @relation(fields: [docId], references: [id])
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@unique([userId, docId])
+}
+
+enum NotificationType {
+  DOCUMENT_SHARED
+  DOCUMENT_REQUEST
+}
+
 enum RequestStatus {
   PENDING
   ACCEPTED
   REJECTED
 }
+
 enum SaveEvery {
- THIRTY_SECONDS
- MINUTE
- FIVE_MINUTES
- TEN_MINUTES
- THIRTY_MINUTES
- HOUR
+  THIRTY_SECONDS
+  MINUTE
+  FIVE_MINUTES
+  TEN_MINUTES
+  THIRTY_MINUTES
+  HOUR
 }

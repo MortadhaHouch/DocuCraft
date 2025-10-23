@@ -1,16 +1,16 @@
 import { Server } from '@hocuspocus/server';
 import { SQLite } from '@hocuspocus/extension-sqlite';
 import { Logger } from '@hocuspocus/extension-logger';
-
+import "dotenv/config"
 // Configure the server
 const server = new Server({
-  port: 1234,
+  port: parseInt(process.env.NEXT_PUBLIC_SOCKET_PORT || "1234"),
   extensions: [
     new SQLite(),
     new Logger(),
   ],
   onListen: async () => {
-    console.log('✅ Hocuspocus server is running on ws://localhost:1234');
+    console.log(`✅ Hocuspocus server is running on ${process.env.NEXT_PUBLIC_SOCKET_URL}`);
   },
   onRequest: async ({ request }) => {
     console.log('📡 Request:', request.url);

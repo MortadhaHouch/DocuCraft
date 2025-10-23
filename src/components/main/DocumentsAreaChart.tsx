@@ -1,7 +1,7 @@
 "use client"
 import { TrendingUp, TrendingDown } from "lucide-react"
 import { Area, AreaChart as AreaChartRoot, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts"
-
+import { Document } from "@/generated/prisma"
 import {
   Card,
   CardContent,
@@ -16,13 +16,13 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { useState } from "react"
-import { Button } from "../ui/button"
 import { Checkbox } from "../ui/checkbox"
 import { Label } from "../ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 interface AreaChartProps {
   title: string
   description: string
-  data: Array<{xValue:string,yValue:number|string}>
+  data: Array<Document>
   height?: number
   showYAxis?: boolean
   showGrid?: boolean
@@ -107,7 +107,7 @@ const colorSchemes = {
   }
 }
 
-export function AreaChart({
+export function DocumentsAreaChart({
   title,
   description,
   data,
@@ -139,15 +139,27 @@ export function AreaChart({
     trend: isTrendingUp ? "text-green-600" : "text-red-600",
     className: ""
   } : colorSchemes[colorScheme]
-
+  const [documentGroupCriteria,setDocumentGroupCriteria] = useState<"day"|"week"|"month"|"year">("day")
   // Generate unique gradient ID
   const gradientId = `area-gradient-${Math.random().toString(36).substr(2, 9)}`
   // Process the data to count items per xValue
   const chartData = data.map(item => ({
-    name: item.xValue,
-    value: Number(item.yValue), // Ensure this is a number
-    date: item.xValue // Or any other date field you want to use
-  }));
+      name: item.createdAt,
+      value: Number(item.views), // Ensure this is a number
+      date: item.createdAt // Or any other date field you want to use
+    }));
+    const documentGroupData = chartData.reduce((acc, doc) => {
+      const date = new Date(doc.date);
+      const groupKey = documentGroupCriteria === "day" ? date.toDateString() :
+        documentGroupCriteria === "week" ? date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) :
+          documentGroupCriteria === "month" ? date.toLocaleDateString("en-US", { year: "numeric", month: "short" }) :
+            date.getFullYear().toString();
+      if (!acc[groupKey]) {
+        acc[groupKey] = { count: 0 };
+      }
+      acc[groupKey].count++;
+      return acc;
+    }, {} as Record<string, { count: number }>)
   
   return (
     <Card className={className}>
@@ -173,6 +185,23 @@ export function AreaChart({
             />
             <Label htmlFor="axisLine" className="text-sm font-medium">Axis Line</Label>
           </div>
+          <div className="flex items-center gap-2">
+            <Label htmlFor="documentGroupCriteria" className="text-sm font-medium">Group By</Label>
+            <Select
+              value={documentGroupCriteria}
+              onValueChange={(e)=>setDocumentGroupCriteria(e as "day"|"week"|"month"|"year")}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a group by option" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="day">Day</SelectItem>
+                <SelectItem value="week">Week</SelectItem>
+                <SelectItem value="month">Month</SelectItem>
+                <SelectItem value="year">Year</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="p-4">
@@ -187,7 +216,7 @@ export function AreaChart({
         >
           <ResponsiveContainer width="100%" height={height}>
             <AreaChartRoot
-              data={chartData}
+              data={Object.entries(documentGroupData).map(([name, { count }]) => ({ name, count }))}
               margin={{
                 top: 10,
                 right: 30,
@@ -220,7 +249,7 @@ export function AreaChart({
               />
               {showYAxis && (
                 <YAxis
-                  dataKey="value"
+                  dataKey="count"
                   tickLine={chartDisplayConfig.tickLine}
                   axisLine={chartDisplayConfig.axisLine}
                   tickMargin={8}
@@ -255,7 +284,7 @@ export function AreaChart({
               </defs>
               <Area
                 type="monotone"
-                dataKey="value"
+                dataKey="count"
                 fill={`url(#${gradientId})`}
                 fillOpacity={0.8}
                 stroke={colors.stroke}

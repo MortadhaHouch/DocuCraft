@@ -3,11 +3,11 @@ import { AreaChart } from '@/components/charts/AreaChart';
 import { DocumentsTable } from '@/components/main/DocumentsTable';
 import { DashboardCard } from '@/components/ui/dashboard-card';
 import { DashboardHeader } from '@/components/ui/dashboard-header';
-import { Document } from '@/generated/prisma';
 import { Users, Files, Archive, Share } from 'lucide-react';
 import { useState } from 'react';
-import { v4 as uuid } from 'uuid';
 import { Sort } from '../../../utils/type';
+import { sampleDocuments } from '@/lib/sample-documents';
+import { DocumentsAreaChart } from '@/components/main/DocumentsAreaChart';
 // Dashboard stats data
 const stats = [
   {
@@ -47,30 +47,7 @@ const stats = [
     bgColor: 'bg-orange-500/10',
   },
 ];
-const documents: Document[] = Array.from({ length: 20 }, (_, i) => {
-  const now = new Date();
-  const randomDaysAgo = Math.floor(Math.random() * 30);
-  const createdAt = new Date(now);
-  createdAt.setDate(now.getDate() - randomDaysAgo);
-  const updatedAt = new Date(createdAt);
-  updatedAt.setDate(createdAt.getDate() + Math.floor(Math.random() * 5));
-  
-  return {
-    id: uuid(),
-    title: `Document ${i + 1} - ${['Project', 'Report', 'Analysis', 'Study', 'Review'][i % 5]}`,
-    description: `This is a sample document for testing purposes. Created on ${createdAt.toLocaleDateString()}.`,
-    content: `# Document ${i + 1}\n\nThis is the content of document ${i + 1}. It contains sample text for demonstration.`,
-    authorId: uuid(),
-    createdAt,
-    updatedAt,
-    isArchived: Math.random() > 0.7, // 30% chance of being archived
-    isDeleted: Math.random() > 0.7, // 30% chance of being deleted
-    isPinned: Math.random() > 0.7, // 30% chance of being pinned
-    downloads: Math.floor(Math.random() * 1000),
-    views: Math.floor(Math.random() * 5000),
-    requestId: uuid()
-  };
-});
+const documents = sampleDocuments;
 export default function Dashboard() {
   const [sort,setSort] = useState<Sort|undefined>({
     criteria:"createdAt",
@@ -91,9 +68,52 @@ export default function Dashboard() {
         ))}
       </section>
       <section className='w-full max-w-7xl grid grid-cols-1 gap-3 md:grid-cols-2'>
-        <AreaChart data={[]} title='Docs Per date' description='Docs count per date'/>
-        <AreaChart data={[]} title='Docs Per date' description='Docs count per date'/>
-        <AreaChart className="md:col-span-2" data={[]} title='Docs Per date' description='Docs count per date'/>
+        <DocumentsAreaChart 
+          data={documents}
+          fillOpacity={0.5}
+          strokeColor="hsl(var(--border))"
+          strokeWidth={2}
+          showTrend
+          trendValue={5.2}
+          trendPeriod="January - June 2024"
+          showGrid
+          showYAxis
+          height={300}
+          colorScheme="primary"
+          title="Documents per date"
+          description='Documents count per date'
+        />
+        <AreaChart 
+          data={[]}
+          title='Collaborations'
+          height={300}
+          showGrid
+          showYAxis
+          colorScheme="purple"
+          fillOpacity={0.5}
+          strokeColor="hsl(var(--border))"
+          strokeWidth={2}
+          showTrend
+          trendValue={5.2}
+          trendPeriod="January - June 2024"
+          description='Collaborations progress per date'
+        />
+        <AreaChart 
+          className="md:col-span-2" 
+          data={[]}
+          title='Interactions'
+          height={300}
+          showGrid
+          showYAxis
+          colorScheme="indigo"
+          fillOpacity={0.5}
+          strokeColor="hsl(var(--border))"
+          strokeWidth={2}
+          showTrend
+          trendValue={5.2}
+          trendPeriod="January - June 2024"
+          description='Interactions count per date'
+        />
       </section>
       <section className='w-full max-w-7xl justify-center items-center'>
         <DocumentsTable sort={sort} documents={documents} onSortChange={setSort}/>

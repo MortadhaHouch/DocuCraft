@@ -22,16 +22,16 @@ import {
   Settings,
   LogOut,
   Trash,
-  Accessibility
+  Loader
 } from 'lucide-react';
 import { Button } from './button';
 const menuItems = [
-  { title: 'Dashboard', icon: LayoutDashboard, href: '' },
-  { title: 'Documents', icon: BarChart3, href: 'dashboard/documents' },
-  { title: 'Requests', icon: Accessibility, href: 'dashboard/requests' },
-  { title: 'Trash', icon: Trash, href: 'dashboard/trash' },
-  { title: 'Notifications', icon: Bell, href: 'dashboard/notifications' },
-  { title: 'Settings', icon: Settings, href: 'dashboard/settings' },
+  { title: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
+  { title: 'Documents', icon: BarChart3, href: '/dashboard/documents' },
+  { title: 'Requests', icon: Loader, href: '/dashboard/requests' },
+  { title: 'Trash', icon: Trash, href: '/dashboard/trash' },
+  { title: 'Notifications', icon: Bell, href: '/dashboard/notifications' },
+  { title: 'Settings', icon: Settings, href: '/dashboard/settings' },
 ];
 
 export const Sidebar = memo(() => {

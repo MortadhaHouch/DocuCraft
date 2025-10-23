@@ -95,24 +95,24 @@ export default function Footer() {
             </div>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-foreground/70">
+                <Link href="#" className="text-foreground/70">
                   About
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-foreground/70">
+                <Link href="#" className="text-foreground/70">
                   Careers
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-foreground/70">
+                <Link href="#" className="text-foreground/70">
                   Blog
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-foreground/70">
+                <Link href="#" className="text-foreground/70">
                   Contact
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -122,24 +122,24 @@ export default function Footer() {
             </div>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-foreground/70">
+                <Link href="#" className="text-foreground/70">
                   Docs
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-foreground/70">
+                <Link href="#" className="text-foreground/70">
                   Community
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-foreground/70">
+                <Link href="#" className="text-foreground/70">
                   Support
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-foreground/70">
+                <Link href="#" className="text-foreground/70">
                   Security
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

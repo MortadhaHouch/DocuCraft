@@ -4,21 +4,32 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 
-export function Sonner() {
+export function Sonner({
+  title,
+  description,
+  action
+}:{
+  title:string
+  description:string
+  action:{
+    label:string
+    onClick:()=>void
+  }
+}) {
   return (
     <Button
       variant="outline"
       onClick={() =>
-        toast("Event has been created", {
-          description: "Sunday, December 03, 2023 at 9:00 AM",
+        toast(title, {
+          description,
           action: {
-            label: "Undo",
-            onClick: () => console.log("Undo"),
+            label: action.label,
+            onClick: action.onClick,
           },
         })
       }
     >
-      Show Toast
+      {title}
     </Button>
   )
 }

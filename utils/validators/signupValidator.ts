@@ -7,4 +7,4 @@ export const signupValidator = z.object({
     password: z.string().min(8).max(20),
     confirmPassword: z.string().min(8).max(20),
 })
-export type SignupInput = z.infer<typeof signupValidator>
+export type Signup = z.infer<typeof signupValidator>

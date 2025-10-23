@@ -1,6 +1,6 @@
 "use client"
 
-import {useEffect, useState, useRef, Dispatch, SetStateAction} from "react"
+import {useEffect, useState, useRef } from "react"
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react"
 import { Details, DetailsContent, DetailsSummary } from '@tiptap/extension-details'
 import { Gapcursor, Placeholder } from '@tiptap/extensions'
@@ -17,9 +17,7 @@ import { Selection } from "@tiptap/extensions"
 
 // --- UI Primitives ---
 import {
-  Toolbar,
-  ToolbarGroup,
-  ToolbarSeparator,
+  Toolbar
 } from "@/components/tiptap-ui-primitive/toolbar"
 
 // --- Tiptap Node ---
@@ -34,25 +32,7 @@ import "@/components/tiptap-node/heading-node/heading-node.scss"
 import "@/components/tiptap-node/paragraph-node/paragraph-node.scss"
 
 // --- Tiptap UI ---
-import { HeadingDropdownMenu } from "@/components/tiptap-ui/heading-dropdown-menu"
-import { ImageUploadButton } from "@/components/tiptap-ui/image-upload-button"
-import { ListDropdownMenu } from "@/components/tiptap-ui/list-dropdown-menu"
-import { BlockquoteButton } from "@/components/tiptap-ui/blockquote-button"
-import { CodeBlockButton } from "@/components/tiptap-ui/code-block-button"
 import Document from '@tiptap/extension-document'
-import {
-  ColorHighlightPopover,
-  ColorHighlightPopoverContent,
-  ColorHighlightPopoverButton,
-} from "@/components/tiptap-ui/color-highlight-popover"
-import {
-  LinkPopover,
-  LinkContent,
-  LinkButton,
-} from "@/components/tiptap-ui/link-popover"
-import { MarkButton } from "@/components/tiptap-ui/mark-button"
-import { TextAlignButton } from "@/components/tiptap-ui/text-align-button"
-import { UndoRedoButton } from "@/components/tiptap-ui/undo-redo-button"
 import { TableKit } from '@tiptap/extension-table'
 import { TableRow } from '@tiptap/extension-table-row'
 import { TableHeader } from '@tiptap/extension-table-header'
@@ -68,45 +48,28 @@ import {
   TextStyleKit,
 } from '@tiptap/extension-text-style'
 import { HocuspocusProvider } from '@hocuspocus/provider'
-// --- Icons ---
-import { ArrowLeftIcon } from "@/components/tiptap-icons/arrow-left-icon"
-import { HighlighterIcon } from "@/components/tiptap-icons/highlighter-icon"
-import { LinkIcon } from "@/components/tiptap-icons/link-icon"
-
 // --- Hooks ---
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useWindowSize } from "@/hooks/use-window-size"
 import { useCursorVisibility } from "@/hooks/use-cursor-visibility"
-import { WebsocketProvider } from "y-websocket";
 
-// --- Components ---
-import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle"
 
 // --- Lib ---
 import { cn, handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss"
-import { FolderSyncIcon, PaintRoller, Plus, SaveIcon, ShareIcon } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Table from "@/components/tiptap-ui/table/table"
+import { PaintRoller, Plus, SaveIcon, ShareIcon } from "lucide-react"
 import { Edit ,Table as TableIcon } from "lucide-react"
-import { EditorConfig, Permission, SaveEvery, Tab, TabName } from "../../../../utils/type"
-import { Select } from "@/components/main/Select"
-import { Switch } from "@/components/ui/switch"
-import FileToolbar from "@/components/file-toolbar/FileToolbar"
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
-import { ColorButton } from "@/components/tiptap-ui/color-button/ColorButton"
-import FontSizeButton from "@/components/tiptap-ui/font-size-button/FontSizeButton"
-import FontFamilyButton from "@/components/tiptap-ui/font-family-button/Font-family-button"
-import LineHeightButton from "@/components/tiptap-ui/line-height-button/line-height-button"
-import BackgroundColorButton from "@/components/tiptap-ui/background-color-button/background-color-button"
+import { EditorConfig, Permission, SaveEvery, Tab } from "../../../../utils/type"
 import { CharacterCount } from '@tiptap/extensions'
 import Collaboration from '@tiptap/extension-collaboration'
 import CollaborationCaret from '@tiptap/extension-collaboration-caret'
 import { generateRandomUsers } from "../../../../utils/generateRandomUser"
-import { Y } from "@/lib/yjs-setup"
-const tabs: Tab[] = [
+import * as Y from "yjs"
+import { MainToolbarContent } from "@/components/tiptap-ui/main-toolbar/main-toolbar"
+import { MobileToolbarContent } from "@/components/tiptap-ui/mobile-toolbar/mobile-toolbar"
+export const tabs: Tab[] = [
   {
     value: "Edit",
     label: "Edit",
@@ -136,211 +99,9 @@ const tabs: Tab[] = [
   }
 ]
 
-const MainToolbarContent = ({
-  onHighlighterClick,
-  onLinkClick,
-  isMobile,
-  editorConfig,
-  setEditorConfig
-}: {
-  onHighlighterClick: () => void
-  onLinkClick: () => void
-  isMobile: boolean
-  editorConfig: EditorConfig
-  setEditorConfig: Dispatch<SetStateAction<EditorConfig>>
-}) => {
-  const { editor } = useTiptapEditor()
-  const [activeTab, setActiveTab] = useState<TabName>("Edit")
-  return (
-    <div className="w-full max-w-7xl flex flex-col items-center gap-1 bg-slate-200 dark:bg-slate-900">
-      <FileToolbar 
-        editorConfig={editorConfig} 
-        setEditorConfig={setEditorConfig}
-      />
-      <div className="w-full flex items-center gap-1">
-        {
-          tabs.map((tab) => (
-            <Button 
-              key={tab.value} 
-              className={cn(activeTab === tab.value && "bg-slate-300 dark:bg-slate-800", "flex items-center gap-1")} variant="outline" onClick={() => setActiveTab(tab.value)}
-            >
-              {tab.content}
-              {tab.label}
-            </Button>
-          ))
-        }
-        <ToolbarGroup className="bg-slate-300 dark:bg-slate-800 rounded-md flex items-center gap-1">
-          <ThemeToggle />
-        </ToolbarGroup>
-      </div>
-      {
-        activeTab === "Edit" && (
-          <ToolbarGroup className="bg-slate-300 dark:bg-slate-800 rounded-md w-full flex justify-start items-center gap-1 p-1">
-            <ToolbarGroup className="bg-slate-300 dark:bg-slate-800 rounded-md flex items-center gap-1">
-              <FontSizeButton/>
-              <LineHeightButton/>
-              <FontFamilyButton/>
-              <BackgroundColorButton/>
-              <MarkButton type="bold" />
-              <MarkButton type="italic" />
-              <MarkButton type="strike" />
-              <MarkButton type="code" />
-              <MarkButton type="underline" />
-              <ColorButton/>
-              {!isMobile ? (
-                <ColorHighlightPopover />
-              ) : (
-                <ColorHighlightPopoverButton onClick={onHighlighterClick} />
-              )}
-              {!isMobile ? <LinkPopover /> : <LinkButton onClick={onLinkClick} />}
-            </ToolbarGroup>
-            <ToolbarGroup className="bg-slate-300 dark:bg-slate-800 rounded-md flex items-center gap-1">
-              <UndoRedoButton action="undo" />
-              <UndoRedoButton action="redo" />
-            </ToolbarGroup>
-            <ToolbarGroup className="bg-slate-300 dark:bg-slate-800 rounded-md flex items-center gap-1">
-              <MarkButton type="superscript" />
-              <MarkButton type="subscript" />
-            </ToolbarGroup>
-            <ToolbarGroup className="bg-slate-300 dark:bg-slate-800 rounded-md flex items-center gap-1">
-              <HeadingDropdownMenu levels={[1, 2, 3, 4]} portal={isMobile} className="bg-slate-300 dark:bg-slate-800 rounded-md flex flex-col justify-center items-center gap-1"/>
-              <ListDropdownMenu
-                types={["bulletList", "orderedList", "taskList"]}
-                portal={isMobile}
-                className="bg-slate-300 dark:bg-slate-800 rounded-md flex flex-col justify-center items-center gap-1"
-              />
-              <BlockquoteButton />
-              <CodeBlockButton />
-            </ToolbarGroup>
-          </ToolbarGroup>
-        )
-      }
-      {
-        activeTab === "Save" && (
-          <ToolbarGroup className="bg-slate-300 dark:bg-slate-800 rounded-md w-full flex justify-start items-center gap-1 p-1">
-            <Button variant="outline"
-              onClick={() => {
-                
-              }}
-            >
-              <SaveIcon />
-              <span>Save</span>
-            </Button>
-            <div
-              className="flex items-center gap-1 cursor-pointer bg-slate-300 dark:bg-slate-800 rounded-md p-1"
-              onClick={() => {
-                setEditorConfig({
-                  ...editorConfig,
-                  autoSave: !editorConfig.autoSave,
-                })
-              }}
-            >
-              <FolderSyncIcon />
-              <Switch checked={editorConfig.autoSave}/>
-            </div>
-            <Select
-              disabled={!editorConfig.autoSave}
-              options={
-                Object.values(SaveEvery).map((saveInterval) => ({
-                  value: saveInterval,
-                  label: saveInterval.split("_").join(" ").toLowerCase(),
-                }))
-              }
-              value={editorConfig.saveInterval}
-              onChange={(value) => {
-                setEditorConfig({
-                  ...editorConfig,
-                  saveInterval: value as SaveEvery,
-                })
-              }}
-            />
-          </ToolbarGroup>
-        )
-      }
-      {
-        activeTab === "Style" && (
-          <ToolbarGroup className="bg-slate-300 dark:bg-slate-800 rounded-md w-full flex justify-start items-center gap-1 p-1">
-            <ToolbarGroup className="bg-slate-300 dark:bg-slate-800 rounded-md flex items-center gap-1">
-              <TextAlignButton align="left" />
-              <TextAlignButton align="center" />
-              <TextAlignButton align="right" />
-              <TextAlignButton align="justify" />
-            </ToolbarGroup>
-          </ToolbarGroup>
-        )
-      }
-      {
-        activeTab === "Share" && (
-          <ToolbarGroup className="bg-slate-300 dark:bg-slate-800 rounded-md w-full flex justify-start items-center gap-1 p-1">
-            <Button variant="outline">
-              <ShareIcon />
-            </Button>
-            <Select options={Object.values(Permission).map((permission) => ({ value: permission, label: permission }))} 
-            value={editorConfig.permission}
-            onChange={(value) => {
-              setEditorConfig({
-                ...editorConfig,
-                permission: value as Permission,
-              })
-            }}
-            />
-          </ToolbarGroup>
-        )
-      }
-      {
-        activeTab === "table" && (
-          <ToolbarGroup className="bg-slate-300 dark:bg-slate-800 rounded-md w-full flex justify-start items-center gap-1 p-1">
-            <Table />
-          </ToolbarGroup>
-        )
-      }
-      {
-        activeTab === "Insert" && (
-          <ToolbarGroup className="bg-slate-300 dark:bg-slate-800 rounded-md w-full flex justify-start items-center gap-1 p-1">
-            <ImageUploadButton text="Add" />
-            <LinkPopover
-              hideWhenUnavailable={true}
-              autoOpenOnLinkActive={true}
-              onSetLink={() => console.log('Link set!')}
-              onOpenChange={(isOpen) => console.log('Popover opened:', isOpen)}
-            />
-          </ToolbarGroup>
-        )
-      }
 
-      {isMobile && <ToolbarSeparator />}
-    </div>
-  )
-}
 
-const MobileToolbarContent = ({
-  type,
-  onBack,
-}: {
-  type: "highlighter" | "link"
-  onBack: () => void
-}) => (
-  <>
-    <ToolbarGroup>
-      <Button data-style="ghost" onClick={onBack}>
-        <ArrowLeftIcon className="tiptap-button-icon" />
-        {type === "highlighter" ? (
-          <HighlighterIcon className="tiptap-button-icon" />
-        ) : (
-          <LinkIcon className="tiptap-button-icon" />
-        )}
-      </Button>
-    </ToolbarGroup>
 
-    <ToolbarSeparator />
-
-    {type === "highlighter" ? (
-      <ColorHighlightPopoverContent />
-    ) : (
-      <LinkContent />
-    )}
-  </>
-)
 
 export function SimpleEditor(
   {
@@ -356,7 +117,6 @@ export function SimpleEditor(
   }) {
   const isMobile = useIsMobile()
   const { height } = useWindowSize()
-  const [isCollaborating,setIsCollaborating] = useState(false)
   const [editorConfig,setEditorConfig] = useState<EditorConfig>({
     title:"",
     isPinned:false,
@@ -465,18 +225,7 @@ export function SimpleEditor(
       }),
       CharacterCount
     ],
-    content,
-    onCreate:()=>{
-      provider.on("connection-close",()=>{
-        setIsCollaborating(false)
-      })
-      provider.on("sync",()=>{
-        setIsCollaborating(true)
-      })
-    },
-    onDestroy:()=>{
-      setIsCollaborating(false)
-    }
+    content
   })
 
   const rect = useCursorVisibility({
@@ -492,7 +241,6 @@ export function SimpleEditor(
 
   return (
     <section className={cn("shadow-lg rounded-lg border border-slate-200 flex flex-col", className)}>
-      {isCollaborating ?"connected":"disconnected"}
       <EditorContext.Provider value={{ editor }}>
         <Toolbar
           ref={toolbarRef}
@@ -516,12 +264,15 @@ export function SimpleEditor(
             <MobileToolbarContent
               type={mobileView === "highlighter" ? "highlighter" : "link"}
               onBack={() => setMobileView("main")}
+              editorConfig={editorConfig}
+              setEditorConfig={setEditorConfig}
             />
           )}
         </Toolbar>
         <EditorContent
           editor={editor}
           role="presentation"
+          id="tiptap-content"
           className="flex-1 overflow-y-auto p-4 border-t border-slate-200 bg-slate-400 dark:bg-slate-950"
         />
       </EditorContext.Provider>
