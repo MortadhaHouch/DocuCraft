@@ -1,3 +1,5 @@
+import { generateRandomUsers } from "./generateRandomUser"
+
 export const userData = {
     name: "Mortadha Houch",
     email: "mortahouch123@gmail.com",
@@ -7,3 +9,4 @@ export const userData = {
     github:"https://github.com/MortadhaHouch",
 }
 export const SESSION_EXPIRES_IN = 60 * 60 * 1000 * 24 * 7
+export const randomUsers = generateRandomUsers()

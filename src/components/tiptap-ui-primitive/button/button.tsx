@@ -74,13 +74,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <Tooltip delay={200}>
-        <TooltipTrigger
-          className={cn("tiptap-button", className)}
-          ref={ref}
-          aria-label={ariaLabel}
-          {...props}
-        >
-          {children}
+        <TooltipTrigger asChild>
+          <button
+            className={cn("tiptap-button", className)}
+            ref={ref}
+            aria-label={ariaLabel}
+            {...props}
+          >
+            {children}
+          </button>
         </TooltipTrigger>
         <TooltipContent>
           {tooltip}

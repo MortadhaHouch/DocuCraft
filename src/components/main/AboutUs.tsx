@@ -8,16 +8,14 @@ import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import {
   Users,
-  Award,
   Sparkles,
   Building,
   LineChart,
-  CheckCircle,
-  Clock,
   Zap,
   File,
   Download,
   UsersRoundIcon,
+  Share,
 } from 'lucide-react';
 
 interface StatItemProps {
@@ -97,15 +95,15 @@ export default function AboutUs() {
 
   const stats = [
     {
-      value: 100,
-      label: 'Happy Clients',
+      value: 5_000,
+      label: 'Active users',
       icon: <Users className="h-5 w-5" />,
       delay: 0,
       color: 'from-rose-500 to-orange-500',
       decimalPlaces: 0,
     },
     {
-      value: 1000,
+      value: 120_000,
       label: 'Documents created',
       icon: <File className="h-5 w-5" />,
       delay: 0.1,
@@ -113,7 +111,7 @@ export default function AboutUs() {
       decimalPlaces: 0,
     },
     {
-      value: 1000,
+      value: 85_000,
       label: 'Files downloaded',
       icon: <Download className="h-5 w-5" />,
       delay: 0.2,
@@ -121,11 +119,19 @@ export default function AboutUs() {
       decimalPlaces: 0,
     },
     {
-      value: 200,
-      label: 'Hours of collaboration',
+      value: 250_000,
+      label: 'Hours collaborated',
       icon: <UsersRoundIcon className="h-5 w-5" />,
       delay: 0.3,
       color: 'from-purple-500 to-violet-500',
+      decimalPlaces: 0,
+    },
+    {
+      value: 45_000,
+      label: 'Shares',
+      icon: <Share className="h-5 w-5" />,
+      delay: 0.4,
+      color: 'from-sky-500 to-cyan-500',
       decimalPlaces: 0,
     },
   ];
@@ -168,7 +174,7 @@ export default function AboutUs() {
               className="border-primary/20 bg-primary/5 rounded-full px-4 py-1 text-sm font-medium"
             >
               <Sparkles className="text-primary mr-1 h-3.5 w-3.5" />
-              About Us
+              About DocuCraft
             </Badge>
           </motion.div>
 
@@ -178,7 +184,7 @@ export default function AboutUs() {
             transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
             className="from-foreground to-foreground/70 bg-gradient-to-b bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl"
           >
-            About Our Company
+            About DocuCraft — Collaborative documents, simplified
           </motion.h1>
 
           <motion.p
@@ -187,7 +193,10 @@ export default function AboutUs() {
             transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
             className="text-muted-foreground mt-4 text-xl"
           >
-            Delivering excellence for over 15 years
+            DocuCraft is a collaborative document workspace built for teams.
+            Create, edit, and share documents in real time — with versioning,
+            access controls, and seamless collaboration tools that keep your
+            work moving.
           </motion.p>
         </div>
 
@@ -226,9 +235,9 @@ export default function AboutUs() {
               <h2 className="text-2xl font-bold tracking-tight">Our Mission</h2>
 
               <p className="text-muted-foreground text-base leading-relaxed">
-                To empower individuals and businesses with innovative digital solutions that
-                drive growth, enhance user experiences, and create lasting value
-                in an ever-evolving technological landscape.
+                Make document collaboration simple, fast, and reliable. We help
+                teams co-author with confidence, preserve history, and ship
+                better work together.
               </p>
             </motion.div>
 
@@ -247,9 +256,9 @@ export default function AboutUs() {
               <h2 className="text-2xl font-bold tracking-tight">Our Vision</h2>
 
               <p className="text-muted-foreground text-base leading-relaxed">
-                To be the leading provider of transformative digital
-                experiences, recognized globally for our commitment to
-                excellence, innovation, and client success.
+                To be the go-to workspace for teams of all sizes — where
+                collaboration is frictionless, privacy is respected, and
+                knowledge stays organized and discoverable.
               </p>
             </motion.div>
           </div>
@@ -264,10 +273,10 @@ export default function AboutUs() {
               <Building className="h-5 w-5" />
             </div>
             <p className="text-muted-foreground text-base leading-relaxed">
-              We are a passionate team of experts dedicated to delivering
-              exceptional solutions that help businesses thrive in the digital
-              landscape. Our commitment to innovation and quality has made us a
-              trusted partner for organizations worldwide.
+              DocuCraft is built by a small team of product and engineering
+              professionals focused on real-time collaboration, security, and
+              delightful UX. We partner with organizations to streamline
+              document workflows and reduce friction across teams.
             </p>
           </motion.div>
         </div>
@@ -282,35 +291,35 @@ export default function AboutUs() {
             transition={{ duration: 0.6, ease: 'easeOut' }}
             className="mb-10 text-center text-2xl font-bold tracking-tight md:text-3xl"
           >
-            Our Journey
+            Product milestones
           </motion.h2>
 
           <div className="border-border/60 relative ml-4 border-l pl-8 md:ml-0 md:border-none md:pl-0">
             {[
               {
-                year: '2008',
+                year: '2018',
                 title: 'Founded',
                 description:
-                  'Our company was established with a vision to transform digital experiences.',
-              },
-              {
-                year: '2015',
-                title: 'Global Expansion',
-                description:
-                  'Expanded operations to serve clients across 20+ countries worldwide.',
-              },
-              {
-                year: '2019',
-                title: 'Innovation Award',
-                description:
-                  'Recognized for our cutting-edge solutions and technological innovation.',
-              },
-              {
-                year: '2023',
-                title: 'New Horizons',
-                description:
-                  'Launched new service offerings to meet evolving market demands.',
-              },
+                  'DocuCraft started with a simple idea: make document collaboration easy and reliable for teams.',
+                },
+                {
+                  year: '2019',
+                  title: 'Public Beta',
+                  description:
+                    'Released the first beta and onboarded early teams to validate realtime editing and sharing workflows.',
+                },
+                {
+                  year: '2021',
+                  title: 'Realtime Collaboration',
+                  description:
+                    'Launched real-time co-editing, presence indicators, and conflict-free editing for better teamwork.',
+                },
+                {
+                  year: '2024',
+                  title: 'Integrations & Scale',
+                  description:
+                    'Added integrations, improved performance, and expanded enterprise features to support larger organizations.',
+                },
             ].map((item, index) => (
               <motion.div
                 key={index}

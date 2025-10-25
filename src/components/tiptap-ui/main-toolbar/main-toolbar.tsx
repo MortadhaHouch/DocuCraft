@@ -26,6 +26,7 @@ import { TextAlignButton } from "../text-align-button"
 import { Select } from "@/components/main/Select"
 import { ImageUploadButton } from "../image-upload-button"
 import TableToolbar from "../table/table"
+import MathButtons from "../math/math-buttons"
 
 export const MainToolbarContent = ({
   onHighlighterClick,
@@ -195,6 +196,7 @@ export const MainToolbarContent = ({
               onSetLink={() => console.log('Link set!')}
               onOpenChange={(isOpen) => console.log('Popover opened:', isOpen)}
             />
+            <MathButtons/>
           </ToolbarGroup>
         )
       }

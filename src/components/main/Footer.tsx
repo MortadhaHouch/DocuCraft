@@ -6,7 +6,7 @@ import { Github, Linkedin, Mail } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="relative z-10 mt-8 w-full overflow-hidden pt-16 pb-8">
+    <footer className="relative z-0 mt-8 w-full overflow-hidden pt-16 pb-8">
       <div className="pointer-events-none absolute top-0 left-1/2 z-0 h-full w-full -translate-x-1/2 select-none">
         <div className="absolute -top-32 left-1/4 h-72 w-72 rounded-full bg-purple-600/20 blur-3xl"></div>
         <div className="absolute right-1/4 -bottom-24 h-80 w-80 rounded-full bg-purple-600/20 blur-3xl"></div>

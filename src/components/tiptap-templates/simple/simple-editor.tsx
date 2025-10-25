@@ -1,6 +1,6 @@
 "use client"
-
-import {useEffect, useState, useRef } from "react"
+import 'tippy.js/dist/tippy.css'
+import {useEffect, useState, useRef, memo } from "react"
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react"
 import { Details, DetailsContent, DetailsSummary } from '@tiptap/extension-details'
 import { Gapcursor, Placeholder } from '@tiptap/extensions'
@@ -14,7 +14,9 @@ import { Highlight } from "@tiptap/extension-highlight"
 import { Subscript } from "@tiptap/extension-subscript"
 import { Superscript } from "@tiptap/extension-superscript"
 import { Selection } from "@tiptap/extensions"
-
+import Emoji from '@tiptap/extension-emoji'
+import Mention from '@tiptap/extension-mention'
+import { getHierarchicalIndexes, TableOfContentData, TableOfContentDataItem, TableOfContents as TableOfContentsExtension } from '@tiptap/extension-table-of-contents'
 // --- UI Primitives ---
 import {
   Toolbar
@@ -30,7 +32,7 @@ import "@/components/tiptap-node/list-node/list-node.scss"
 import "@/components/tiptap-node/image-node/image-node.scss"
 import "@/components/tiptap-node/heading-node/heading-node.scss"
 import "@/components/tiptap-node/paragraph-node/paragraph-node.scss"
-
+import 'katex/dist/katex.min.css'
 // --- Tiptap UI ---
 import Document from '@tiptap/extension-document'
 import { TableKit } from '@tiptap/extension-table'
@@ -38,6 +40,7 @@ import { TableRow } from '@tiptap/extension-table-row'
 import { TableHeader } from '@tiptap/extension-table-header'
 import { TableCell } from '@tiptap/extension-table-cell'
 import { Link as LinkExtension } from '@tiptap/extension-link'
+import Math, { BlockMath, InlineMath, migrateMathStrings } from '@tiptap/extension-mathematics'
 import { 
   Color, 
   TextStyle,
@@ -65,10 +68,14 @@ import { EditorConfig, Permission, SaveEvery, Tab } from "../../../../utils/type
 import { CharacterCount } from '@tiptap/extensions'
 import Collaboration from '@tiptap/extension-collaboration'
 import CollaborationCaret from '@tiptap/extension-collaboration-caret'
-import { generateRandomUsers } from "../../../../utils/generateRandomUser"
 import * as Y from "yjs"
 import { MainToolbarContent } from "@/components/tiptap-ui/main-toolbar/main-toolbar"
 import { MobileToolbarContent } from "@/components/tiptap-ui/mobile-toolbar/mobile-toolbar"
+import suggestions from './suggestions'
+import { randomUsers } from '../../../../utils/constants'
+import { TableOfContents } from '@/components/main/TableOfContent'
+import { Sheet } from '@/components/main/Sheet'
+import { Button } from '@/components/ui/button'
 export const tabs: Tab[] = [
   {
     value: "Edit",
@@ -102,7 +109,7 @@ export const tabs: Tab[] = [
 
 
 
-
+const MemorizedToC = memo(TableOfContents)
 export function SimpleEditor(
   {
     content,
@@ -117,6 +124,7 @@ export function SimpleEditor(
   }) {
   const isMobile = useIsMobile()
   const { height } = useWindowSize()
+  const [headers,setHeaders] = useState<TableOfContentDataItem[]>([])
   const [editorConfig,setEditorConfig] = useState<EditorConfig>({
     title:"",
     isPinned:false,
@@ -215,16 +223,73 @@ export function SimpleEditor(
       BackgroundColor,
       LineHeight,
       TextStyleKit,
+      Mention.configure({
+        HTMLAttributes: { class: "selection" },
+        renderText({ options, node }) {
+          return `${options.suggestion?.char ?? '@'}${node.attrs.label ?? node.attrs.id}`
+        },
+          suggestion: suggestions
+      }),
       Collaboration.extend().configure({
         document,
         provider,
       }),
       CollaborationCaret.extend().configure({
         provider,
-        user:generateRandomUsers()[0],
+        user:randomUsers[0],
       }),
-      CharacterCount
+      CharacterCount,
+      Emoji.configure({
+        enableEmoticons: true
+      }),
+      Math.configure({
+        blockOptions: {
+          onClick: (node, pos) => {
+            const newCalculation = prompt('Enter new calculation:', node.attrs.latex)
+            if (newCalculation) {
+              editor?.chain().setNodeSelection(pos).updateBlockMath({ latex: newCalculation }).focus().run()
+            }
+          },
+        },
+        inlineOptions: {
+          onClick: (node,pos) => {
+            const newCalculation = prompt('Enter new calculation:', node.attrs.latex)
+            if (newCalculation) {
+              editor?.chain().setNodeSelection(pos).updateInlineMath({ latex: newCalculation }).focus().run()
+            }
+          },
+        },
+      }),
+      BlockMath.configure({
+        onClick: (node,pos) => {
+          // you can do anything on click, e.g. open a dialog to edit the math node
+          // or just a prompt to edit the LaTeX code for a quick prototype
+          const katex = prompt('Enter new calculation:', node.attrs.latex)
+          if (katex) {
+            editor?.chain().setNodeSelection(pos).updateBlockMath({ latex: katex }).focus().run()
+          }
+        },
+      }),
+      InlineMath.configure({
+        onClick: (node,pos) => {
+          // you can do anything on click, e.g. open a dialog to edit the math node
+          // or just a prompt to edit the LaTeX code for a quick prototype
+          const katex = prompt('Enter new calculation:', node.attrs.latex)
+          if (katex) {
+            editor?.chain().setNodeSelection(pos).updateInlineMath({ latex: katex }).focus().run()
+          }
+        },
+      }),
+      TableOfContentsExtension.configure({
+        getIndex: getHierarchicalIndexes,
+        onUpdate(content) {
+          setHeaders(content)
+        },
+      })
     ],
+    onCreate: ({ editor: currentEditor }) => {
+      migrateMathStrings(currentEditor)
+    },
     content
   })
 
@@ -275,6 +340,22 @@ export function SimpleEditor(
           id="tiptap-content"
           className="flex-1 overflow-y-auto p-4 border-t border-slate-200 bg-slate-400 dark:bg-slate-950"
         />
+        <Sheet 
+          title=''
+          description=''
+          trigger={
+            <Button variant="outline">
+              Table of Contents
+            </Button>
+          }
+          close={
+            <Button variant="outline">
+              Close
+            </Button>
+          }
+        >
+          <MemorizedToC editor={editor} items={headers}/>
+        </Sheet>
       </EditorContext.Provider>
     </section>
   )

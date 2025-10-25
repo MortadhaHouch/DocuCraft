@@ -19,6 +19,8 @@ model User {
   firstName       String
   lastName        String
   email           String          @unique
+  password        String
+  theme           Theme?          @default(LIGHT)
   isLoggedIn      Boolean
   documents       Document[]
   requests        Request[]
@@ -128,4 +130,10 @@ enum SaveEvery {
   TEN_MINUTES
   THIRTY_MINUTES
   HOUR
+}
+
+enum Theme {
+  DARK
+  LIGHT
+  SYSTEM
 }

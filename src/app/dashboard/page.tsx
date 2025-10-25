@@ -2,12 +2,12 @@
 import { AreaChart } from '@/components/charts/AreaChart';
 import { DocumentsTable } from '@/components/main/DocumentsTable';
 import { DashboardCard } from '@/components/ui/dashboard-card';
-import { DashboardHeader } from '@/components/ui/dashboard-header';
 import { Users, Files, Archive, Share } from 'lucide-react';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { Sort } from '../../../utils/type';
 import { sampleDocuments } from '@/lib/sample-documents';
 import { DocumentsAreaChart } from '@/components/main/DocumentsAreaChart';
+import { Skeleton } from '@/components/ui/skeleton';
 // Dashboard stats data
 const stats = [
   {
@@ -55,34 +55,29 @@ export default function Dashboard() {
   })
   return (
     <main className='w-full flex flex-col justify-start items-center gap-2'>
-      <DashboardHeader
-        isRefreshing={false}
-        onExport={()=>{}}
-        onRefresh={()=>{}}
-        onSearchChange={()=>{}}
-        searchQuery=''
-      />
       <section className="w-full max-w-7xl grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
         {stats.map((stat, index) => (
           <DashboardCard key={stat.title} stat={stat} index={index} />
         ))}
       </section>
       <section className='w-full max-w-7xl grid grid-cols-1 gap-3 md:grid-cols-2'>
-        <DocumentsAreaChart 
-          data={documents}
-          fillOpacity={0.5}
-          strokeColor="hsl(var(--border))"
-          strokeWidth={2}
-          showTrend
-          trendValue={5.2}
-          trendPeriod="January - June 2024"
-          showGrid
-          showYAxis
-          height={300}
-          colorScheme="primary"
-          title="Documents per date"
-          description='Documents count per date'
-        />
+        <Suspense fallback={<Skeleton/>}>
+          <DocumentsAreaChart 
+            data={documents}
+            fillOpacity={0.5}
+            strokeColor="hsl(var(--border))"
+            strokeWidth={2}
+            showTrend
+            trendValue={5.2}
+            trendPeriod="January - June 2024"
+            showGrid
+            showYAxis
+            height={300}
+            colorScheme="primary"
+            title="Documents per date"
+            description='Documents count per date'
+          />
+        </Suspense>
         <AreaChart 
           data={[]}
           title='Collaborations'

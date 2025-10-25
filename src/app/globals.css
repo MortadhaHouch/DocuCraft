@@ -290,3 +290,12 @@
     }
   }
 }
+.selection{
+  @apply bg-slate-500 dark:bg-slate-800 transition-all;
+}
+.mention-list__item{
+  @apply cursor-pointer w-full text-left text-sm px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800;
+}
+.mention-list__item--selected{
+  @apply bg-slate-100 dark:bg-slate-800;
+}

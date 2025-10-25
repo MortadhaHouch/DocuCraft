@@ -144,23 +144,22 @@ export function DocumentsAreaChart({
   const gradientId = `area-gradient-${Math.random().toString(36).substr(2, 9)}`
   // Process the data to count items per xValue
   const chartData = data.map(item => ({
-      name: item.createdAt,
-      value: Number(item.views), // Ensure this is a number
-      date: item.createdAt // Or any other date field you want to use
-    }));
-    const documentGroupData = chartData.reduce((acc, doc) => {
-      const date = new Date(doc.date);
-      const groupKey = documentGroupCriteria === "day" ? date.toDateString() :
-        documentGroupCriteria === "week" ? date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) :
-          documentGroupCriteria === "month" ? date.toLocaleDateString("en-US", { year: "numeric", month: "short" }) :
-            date.getFullYear().toString();
-      if (!acc[groupKey]) {
-        acc[groupKey] = { count: 0 };
-      }
-      acc[groupKey].count++;
-      return acc;
-    }, {} as Record<string, { count: number }>)
-  
+    name: item.createdAt,
+    value: Number(item.views), // Ensure this is a number
+    date: item.createdAt // Or any other date field you want to use
+  }));
+  const documentGroupData = chartData.reduce((acc, doc) => {
+    const date = new Date(doc.date);
+    const groupKey = documentGroupCriteria === "day" ? date.toDateString() :
+      documentGroupCriteria === "week" ? date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) :
+        documentGroupCriteria === "month" ? date.toLocaleDateString("en-US", { year: "numeric", month: "short" }) :
+          date.getFullYear().toString();
+    if (!acc[groupKey]) {
+      acc[groupKey] = { count: 0 };
+    }
+    acc[groupKey].count++;
+    return acc;
+  }, {} as Record<string, { count: number }>)
   return (
     <Card className={className}>
       <CardHeader>

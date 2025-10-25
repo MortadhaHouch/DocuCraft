@@ -2,6 +2,7 @@ export type Feature = {
     icon: React.ReactNode;
     title: string;
     description: string;
+    group: "editor" | "collaboration" | "other";
 }
 export enum Extension {
     PDF="pdf",

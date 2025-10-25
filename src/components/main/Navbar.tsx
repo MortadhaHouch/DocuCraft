@@ -37,7 +37,7 @@ export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full backdrop-blur z-50">
       <NavbarRoot>
         {/* Desktop Navigation */}
         <NavBody>
