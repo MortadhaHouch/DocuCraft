@@ -27,6 +27,7 @@ import { Select } from "@/components/main/Select"
 import { ImageUploadButton } from "../image-upload-button"
 import TableToolbar from "../table/table"
 import MathButtons from "../math/math-buttons"
+import { PageBreakButton } from "../page-break-button/page-break-button"
 
 export const MainToolbarContent = ({
   onHighlighterClick,
@@ -197,6 +198,7 @@ export const MainToolbarContent = ({
               onOpenChange={(isOpen) => console.log('Popover opened:', isOpen)}
             />
             <MathButtons/>
+            <PageBreakButton />
           </ToolbarGroup>
         )
       }

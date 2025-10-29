@@ -1,0 +1,22 @@
+.page-break-line {
+  position: relative;
+  text-align: center;
+  user-select: none;
+}
+
+.page-break-label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.page-break {
+  &:hover {
+    cursor: grab;
+  }
+  
+  &.ProseMirror-selectednode {
+    outline: 2px solid #68cef8;
+  }
+}

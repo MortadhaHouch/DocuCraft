@@ -16,7 +16,7 @@ import { Superscript } from "@tiptap/extension-superscript"
 import { Selection } from "@tiptap/extensions"
 import Emoji from '@tiptap/extension-emoji'
 import Mention from '@tiptap/extension-mention'
-import { getHierarchicalIndexes, TableOfContentData, TableOfContentDataItem, TableOfContents as TableOfContentsExtension } from '@tiptap/extension-table-of-contents'
+import { getHierarchicalIndexes, TableOfContentDataItem, TableOfContents as TableOfContentsExtension } from '@tiptap/extension-table-of-contents'
 // --- UI Primitives ---
 import {
   Toolbar
@@ -25,6 +25,7 @@ import {
 // --- Tiptap Node ---
 import { ImageUploadNode } from "@/components/tiptap-node/image-upload-node/image-upload-node-extension"
 import { HorizontalRule } from "@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node-extension"
+import { PageBreak } from "@/components/tiptap-node/page-break-node/page-break-node-extension"
 import "@/components/tiptap-node/blockquote-node/blockquote-node.scss"
 import "@/components/tiptap-node/code-block-node/code-block-node.scss"
 import "@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node.scss"
@@ -32,6 +33,7 @@ import "@/components/tiptap-node/list-node/list-node.scss"
 import "@/components/tiptap-node/image-node/image-node.scss"
 import "@/components/tiptap-node/heading-node/heading-node.scss"
 import "@/components/tiptap-node/paragraph-node/paragraph-node.scss"
+import "@/components/tiptap-node/page-break-node/page-break-node.scss"
 import 'katex/dist/katex.min.css'
 // --- Tiptap UI ---
 import Document from '@tiptap/extension-document'
@@ -62,7 +64,7 @@ import { cn, handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss"
-import { PaintRoller, Plus, SaveIcon, ShareIcon } from "lucide-react"
+import { PaintRoller, Plus, SaveIcon, ShareIcon, FileTerminal } from "lucide-react"
 import { Edit ,Table as TableIcon } from "lucide-react"
 import { EditorConfig, Permission, SaveEvery, Tab } from "../../../../utils/type"
 import { CharacterCount } from '@tiptap/extensions'
@@ -103,6 +105,11 @@ export const tabs: Tab[] = [
     value: "Insert",
     label: "Insert",
     content: <Plus />,
+  },
+  {
+    value: "Page",
+    label: "Page Break",
+    content: <FileTerminal />,
   }
 ]
 
@@ -206,6 +213,7 @@ export function SimpleEditor(
         onError: (error) => console.error("Upload failed:", error),
       }),
       Gapcursor,
+      PageBreak,
       TableKit.configure({
         table: { resizable: true },
       }),

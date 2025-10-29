@@ -3,8 +3,9 @@
 import bcrypt from "bcrypt"
 import db from "@/lib/db"
 import { Login,loginValidator } from "../../../utils/validators"
-import { createSession } from "@/redis/config"
+import { createSession } from "@/redis/config/createSession"
 import { SESSION_EXPIRES_IN } from "../../../utils/constants"
+import { checkPassword } from "./signup"
 
 export const login = async (loginDTO:Login) => {
     
@@ -21,7 +22,7 @@ export const login = async (loginDTO:Login) => {
         if (!user) {
             throw new Error("User not found")
         }
-        const isPasswordValid = await bcrypt.compare(data.password, user.password)
+        const isPasswordValid = await checkPassword(data.password,user.password)
         if (!isPasswordValid) {
             throw new Error("Invalid password")
         }
@@ -32,6 +33,14 @@ export const login = async (loginDTO:Login) => {
             refreshToken: crypto.randomUUID(),
             expiresAt: new Date(Date.now() + SESSION_EXPIRES_IN),
             createdAt: new Date(),
+        })
+        await db.user.update({
+            where: {
+                id: user.id
+            },
+            data: {
+                isLoggedIn: true
+            }
         })
         return {user,session}
     } catch (error) {

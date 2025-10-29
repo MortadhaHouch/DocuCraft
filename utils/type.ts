@@ -18,7 +18,7 @@ export type Tab = {
     label: string;
     content: React.ReactNode;
 }
-export type TabName = "Edit" | "Share" | "Save" | "Style" | "table" | "Insert"
+export type TabName = "Edit" | "Share" | "Save" | "Style" | "table" | "Insert" | "Page"
 export type EditorConfig = {
     title: string
     isPinned: boolean

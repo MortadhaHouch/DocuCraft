@@ -2,9 +2,9 @@
 
 import db from "@/lib/db";
 import { Signup ,signupValidator} from "../../../utils/validators";
-import { createSession } from "@/redis/config";
 import bcrypt from "bcrypt";
 import { SESSION_EXPIRES_IN } from "../../../utils/constants";
+import { createSession } from "@/redis/config/createSession";
 export default async function signup(signupDTO:Signup){
     try{
         const {data,error,success} = signupValidator.safeParse(signupDTO);
@@ -17,6 +17,7 @@ export default async function signup(signupDTO:Signup){
                 lastName: data.lastName,
                 email: data.email,
                 password: await hashPassword(data.password),
+                isLoggedIn: true
             }
         })
         const session = await createSession({
@@ -40,4 +41,7 @@ export async function hashPassword(password:string,salt?:string){
         salt = await generateSalt();
     }
     return await bcrypt.hash(password,salt)
+}
+export async function checkPassword(password:string,hash:string){
+    return await bcrypt.compare(password,hash);
 }
